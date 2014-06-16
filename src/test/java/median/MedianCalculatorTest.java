@@ -62,7 +62,7 @@ public class MedianCalculatorTest {
     final long seed = ThreadLocalRandom.current().nextLong();
     return () -> {
       final SplittableRandom random = new SplittableRandom(seed);
-      return IntStream.generate(random::nextInt).limit(n);
+      return random.ints(n);
     };
   }
 
