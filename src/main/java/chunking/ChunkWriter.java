@@ -1,17 +1,18 @@
 package chunking;
 
-import com.google.common.collect.Lists;
-
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Spliterator.ORDERED;
+import static java.util.Spliterators.AbstractSpliterator;
 
 public class ChunkWriter {
 
   private final ByteBuffer header = ByteBuffer.allocate(4);
   private final int size;
 
-  private List<ByteBuffer> chunks = Lists.newArrayList();
   private ByteBuffer chunk;
 
   public ChunkWriter(final int size) {
@@ -20,37 +21,34 @@ public class ChunkWriter {
   }
 
   public Stream<ByteBuffer> inject(final ByteBuffer message) {
-    if (message != null) {
-      header.putInt(message.remaining());
-      header.flip();
-      inject0(header);
-      header.flip();
-      inject0(message);
-    }
     if (message == null) {
       if (chunk.position() > 0) {
-        flush();
+        chunk.flip();
+        return Stream.of(chunk, null);
+      } else {
+        return Stream.of((ByteBuffer) null);
       }
-      chunks.add(null);
     }
-    if (chunks.size() == 1) {
-      final Stream<ByteBuffer> s = Stream.of(chunks.get(0));
-      chunks.clear();
-      return s;
-    } else {
-      final List<ByteBuffer> completed = chunks;
-      chunks = Lists.newArrayList();
-      return completed.stream();
-    }
+    final long est = message.remaining() / size;
+    return StreamSupport.stream(new AbstractSpliterator<ByteBuffer>(est, ORDERED) {
+
+      @Override
+      public void forEachRemaining(final Consumer<? super ByteBuffer> action) {
+        header.putInt(message.remaining());
+        header.flip();
+        inject0(header, action);
+        header.flip();
+        inject0(message, action);
+      }
+
+      @Override
+      public boolean tryAdvance(final Consumer<? super ByteBuffer> action) {
+        throw new UnsupportedOperationException();
+      }
+    }, false);
   }
 
-  private void flush() {
-    chunk.flip();
-    chunks.add(chunk);
-    chunk = chunk();
-  }
-
-  private void inject0(final ByteBuffer buffer) {
+  private void inject0(final ByteBuffer buffer, final Consumer<? super ByteBuffer> action) {
     while (buffer.hasRemaining()) {
       final int n = Math.min(chunk.remaining(), buffer.remaining());
       final ByteBuffer slice = buffer.slice();
@@ -58,7 +56,9 @@ public class ChunkWriter {
       buffer.position(buffer.position() + n);
       chunk.put(slice);
       if (chunk.remaining() == 0) {
-        flush();
+        chunk.flip();
+        action.accept(chunk);
+        chunk = chunk();
       }
     }
   }

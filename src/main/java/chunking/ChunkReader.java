@@ -1,10 +1,12 @@
 package chunking;
 
-import com.google.common.collect.Lists;
-
 import java.nio.ByteBuffer;
-import java.util.List;
+import java.util.Spliterators;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Spliterator.ORDERED;
 
 public class ChunkReader {
 
@@ -19,25 +21,33 @@ public class ChunkReader {
   private ByteBuffer message;
 
   public Stream<ByteBuffer> inject(final ByteBuffer chunk) {
-    final List<ByteBuffer> messages = Lists.newArrayList();
     if (chunk == null) {
-      messages.add(null);
-    } else {
-      while (chunk.hasRemaining()) {
-        switch (state) {
-          case HEADER:
-            header(chunk);
-            break;
-          case PAYLOAD:
-            payload(chunk, messages);
-            break;
+      return Stream.of((ByteBuffer) null);
+    }
+    final long est = chunk.remaining() / 8;
+    return StreamSupport.stream(new Spliterators.AbstractSpliterator<ByteBuffer>(est, ORDERED) {
+      @Override
+      public void forEachRemaining(final Consumer<? super ByteBuffer> action) {
+        while (chunk.hasRemaining()) {
+          switch (state) {
+            case HEADER:
+              header(chunk);
+              break;
+            case PAYLOAD:
+              payload(chunk, action);
+              break;
+          }
         }
       }
-    }
-    return messages.stream();
+
+      @Override
+      public boolean tryAdvance(final Consumer<? super ByteBuffer> action) {
+        throw new UnsupportedOperationException();
+      }
+    }, false);
   }
 
-  private void payload(final ByteBuffer chunk, final List<ByteBuffer> messages) {
+  private void payload(final ByteBuffer chunk, final Consumer<? super ByteBuffer> action) {
     final int n = Math.min(message.remaining(), chunk.remaining());
     message.put(readSlice(n, chunk));
     if (!message.hasRemaining()) {
@@ -45,7 +55,7 @@ public class ChunkReader {
       message = null;
       state = State.HEADER;
       completed.flip();
-      messages.add(completed);
+      action.accept(completed);
     }
   }
 
