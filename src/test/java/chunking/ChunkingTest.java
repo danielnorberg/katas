@@ -20,7 +20,7 @@ public class ChunkingTest {
 
   @Test
   public void test() {
-    final Supplier<IntStream> sizes = sizes(1_000_000_000);
+    final Supplier<IntStream> sizes = sizes(10_000);
     final Supplier<Stream<ByteBuffer>> input = messages(sizes);
     final Stream<ByteBuffer> chunks = Chunking.write(input.get(), 8);
     final Stream<ByteBuffer> output = Chunking.read(chunks);
