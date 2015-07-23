@@ -52,7 +52,7 @@ public class MedianCalculatorTest {
 
   @Test
   public void testMany() throws Exception {
-    final long n = 1L << 30;
+    final long n = 1L << 20;
     final Supplier<IntStream> values = randStream(n);
     final int m = sut.median(values);
     assertMedian(m, values);
