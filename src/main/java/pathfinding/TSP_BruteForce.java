@@ -7,7 +7,7 @@ import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 
-public class TSP {
+public class TSP_BruteForce {
 
   public static void main(String[] args) {
 
