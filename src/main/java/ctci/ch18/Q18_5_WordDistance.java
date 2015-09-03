@@ -1,6 +1,5 @@
 package ctci.ch18;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 
@@ -112,15 +111,54 @@ public class Q18_5_WordDistance {
     return index;
   }
 
-  @AutoValue
-  public abstract static class Pair {
+  public static class Pair {
 
-    abstract int a();
+    private final int a;
+    private final int b;
 
-    abstract int b();
+    public Pair(final int a, final int b) {
+      this.a = a;
+      this.b = b;
+    }
 
     public static Pair pair(final int a, final int b) {
-      return new AutoValue_Q18_5_WordDistance_Pair(a, b);
+      return new Pair(a, b);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+
+      final Pair pair = (Pair) o;
+
+      if (a != pair.a) {
+        return false;
+      }
+      if (b != pair.b) {
+        return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int result = a;
+      result = 31 * result + b;
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return "Pair{" +
+             "a=" + a +
+             ", b=" + b +
+             '}';
     }
   }
 }
