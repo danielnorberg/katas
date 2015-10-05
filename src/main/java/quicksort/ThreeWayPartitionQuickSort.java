@@ -59,10 +59,8 @@ public class ThreeWayPartitionQuickSort {
       return;
     }
 
-    final int pi = rand(a, b);
-    final int p = v[pi];
-
-    swap(v, a, pi);
+    final int p = v[(b - 1)];
+    swap(v, a, b - 1);
 
     int i = a + 1;
     int k = a + 1;
@@ -128,10 +126,6 @@ public class ThreeWayPartitionQuickSort {
     for (int i = a, j = b - n; i < k; i++, j++) {
       swap(v, i, j);
     }
-  }
-
-  private static int rand(final int origin, final int bound) {
-    return ThreadLocalRandom.current().nextInt(origin, bound);
   }
 
   private static void swap(final int[] v, final int a, final int p) {
