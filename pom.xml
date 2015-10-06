@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jmh.version>1.10.5</jmh.version>
+    <jmh.version>1.11.1</jmh.version>
     <uberjar.name>katas</uberjar.name>
   </properties>
 

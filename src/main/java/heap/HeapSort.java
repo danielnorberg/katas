@@ -64,18 +64,18 @@ public class HeapSort {
    * prepending it to the list, in-place.
    */
   private static int[] heapSort(final int... vs) {
-    heapify(vs);
     for (int i = 0; i < vs.length; i++) {
-      final int n = vs.length - i;
-      vs[n - 1] = extract(vs, n);
+      siftUp(vs, i);
+    }
+    for (int i = 0; i < vs.length; i++) {
+      final int n = vs.length - i - 1;
+      swap(vs, 0, n);
+      siftDown(vs, n);
     }
     return vs;
   }
 
-  private static int extract(final int[] heap, final int n) {
-    final int value = heap[0];
-    heap[0] = heap[n - 1];
-
+  private static void siftDown(final int[] heap, final int n) {
     // n -> n * 2 + 1
     //      n * 2 + 2
 
@@ -85,7 +85,7 @@ public class HeapSort {
       if (cl >= n) {
         break;
       }
-      final int cr = i * 2 + 2;
+      final int cr = cl + 1;
       final int c;
       if (cr >= n || heap[cl] > heap[cr]) {
         c = cl;
@@ -99,15 +99,6 @@ public class HeapSort {
       i = c;
       assert valid(heap, i + 1);
     }
-
-    return value;
-  }
-
-  private static void heapify(final int[] vs) {
-    for (int i = 0; i < vs.length; i++) {
-      insert(vs, i);
-      assert valid(vs, i + 1);
-    }
   }
 
   private static boolean valid(final int[] vs, final int n) {
@@ -120,7 +111,7 @@ public class HeapSort {
     return true;
   }
 
-  private static void insert(final int[] heap, int i) {
+  private static void siftUp(final int[] heap, int i) {
     // n -> (n - 1) / 2
     while (i > 0) {
       final int parent = (i - 1) / 2;
@@ -130,6 +121,7 @@ public class HeapSort {
       swap(heap, parent, i);
       i = parent;
     }
+    assert valid(heap, i + 1);
   }
 
   private static void swap(final int[] heap, final int a, final int b) {
