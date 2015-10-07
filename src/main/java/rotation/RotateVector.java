@@ -1,4 +1,4 @@
-package pearls;
+package rotation;
 
 import static org.junit.Assert.assertArrayEquals;
 
