@@ -1,6 +1,7 @@
 package heap;
 
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -20,11 +21,12 @@ import static org.junit.Assert.assertThat;
 @State(Scope.Benchmark)
 public class HeapSort {
 
-  private int[] input;
+  private static final int[] INPUT = ThreadLocalRandom.current().ints(10_000).toArray();
+  private int[] input = INPUT.clone();
 
-  @Setup
+  @Setup(Level.Invocation)
   public void setup() {
-    input = ThreadLocalRandom.current().ints(10_000).toArray();
+    input = INPUT.clone();
   }
 
   public static void main(final String... args) throws RunnerException {
