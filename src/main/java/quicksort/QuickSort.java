@@ -201,7 +201,7 @@ public class QuickSort {
 
     // Benchmark
     Options opt = new OptionsBuilder()
-        .include(".*" + QuickSort.class.getSimpleName() + ".*MostlyIdenticalInputBenchmark.*")
+        .include(".*" + QuickSort.class.getSimpleName() + ".*")
         .forks(1)
         .warmupIterations(3)
         .measurementIterations(2)
