@@ -11,9 +11,9 @@ import static com.google.common.primitives.Ints.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static quicksort.QuickSort.quickSorted;
+import static quicksort.GenericQuickSort.quickSorted;
 
-public class QuickSortTest {
+public class GenericQuickSortTest {
 
   @Test
   public void testEmpty() throws Exception {
