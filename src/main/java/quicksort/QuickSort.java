@@ -115,6 +115,11 @@ public class QuickSort {
     }
 
     @Benchmark
+    public int[] introInsertionSortBenchmark() {
+      return introInsertionSort(x);
+    }
+
+    @Benchmark
     public int[] arraysSortBenchmark() {
       Arrays.sort(x);
       return x;
@@ -142,6 +147,11 @@ public class QuickSort {
     public int[] introSortBenchmark() {
       return introSort(x);
     }
+
+    @Benchmark
+    public int[] introInsertionSortBenchmark() {
+      return introInsertionSort(x);
+    }
   }
 
   public static class MostlyIdenticalInputBenchmark extends BenchmarkBase {
@@ -165,6 +175,11 @@ public class QuickSort {
     public int[] introSortBenchmark() {
       return introSort(x);
     }
+
+    @Benchmark
+    public int[] introInsertionSortBenchmark() {
+      return introInsertionSort(x);
+    }
   }
 
   public static void main(final String... args) throws RunnerException {
@@ -178,13 +193,15 @@ public class QuickSort {
       assertThat(quickSortAndInsertionSort(input.clone(), i), is(expected));
     }
     assertThat(introSort(input.clone()), is(expected));
+    assertThat(introInsertionSort(input.clone()), is(expected));
     fuzz(10, 1000, QuickSort::quickInsertionSort);
     fuzz(10, 1000, QuickSort::quickSortAndInsertionSort);
     fuzz(10, 1000, (x, cutoff) -> introSort(x));
+    fuzz(10, 1000, (x, cutoff) -> introInsertionSort(x));
 
     // Benchmark
     Options opt = new OptionsBuilder()
-        .include(".*" + QuickSort.class.getSimpleName())
+        .include(".*" + QuickSort.class.getSimpleName() + ".*MostlyIdenticalInputBenchmark.*")
         .forks(1)
         .warmupIterations(3)
         .measurementIterations(2)
@@ -192,14 +209,33 @@ public class QuickSort {
     new Runner(opt).run();
   }
 
+  private static int[] introInsertionSort(final int[] x) {
+    introInsertionSort(x, 0, x.length);
+    return x;
+  }
+
+  private static void introInsertionSort(final int[] x, final int l, final int u) {
+    final int maxdepth = log2(u - l) * 2;
+    introInsertionSort0(x, l, u, maxdepth);
+    insertionSort(x, l, u);
+  }
+
+  private static void introInsertionSort0(final int[] x, final int l, final int u, final int maxdepth) {
+    if (l >= u) {
+      return;
+    }
+    if (maxdepth == 0) {
+      return;
+    }
+    final int pi = partition(x, l, u);
+    introInsertionSort0(x, l, pi, maxdepth - 1);
+    introInsertionSort0(x, pi, u, maxdepth - 1);
+  }
+
   private static int[] introSort(final int[] x) {
     final int maxdepth = log2(x.length) * 2;
     introSort0(x, 0, x.length, maxdepth);
     return x;
-  }
-
-  private static int log2(final int x) {
-    return 32 - Integer.numberOfLeadingZeros(x);
   }
 
   private static void introSort0(final int[] x, final int l, final int u, final int maxdepth) {
@@ -246,7 +282,7 @@ public class QuickSort {
       final int xi = x[i + 1];
       int j = i;
       for (; j >= l; j--) {
-        if (x[j] < xi) {
+        if (x[j] <= xi) {
           break;
         }
         x[j + 1] = x[j];
@@ -323,5 +359,9 @@ public class QuickSort {
     final int t = x[a];
     x[a] = x[b];
     x[b] = t;
+  }
+
+  private static int log2(final int x) {
+    return 32 - Integer.numberOfLeadingZeros(x);
   }
 }
