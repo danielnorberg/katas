@@ -95,7 +95,7 @@ public class Q7_4_MulSubDiv {
   }
 
   private static int sub(final int x, final int y) {
-    return x + mul(-1, y);
+    return x + mul(y, -1);
   }
 
   private static int mul(final int x, final int y) {
