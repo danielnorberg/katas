@@ -25,9 +25,19 @@ public class Q17_11_Rand {
     }
   }
 
+  private static int rand4() {
+    while (true) {
+      final int r = rand5();
+      if (r == 4) {
+        continue;
+      }
+      return r;
+    }
+  }
+
   private static int rand7() {
     while (true) {
-      final int r = (rand2() << 2) | (rand2() << 1) | rand2();
+      final int r = (rand4() << 1) | rand2();
       if (r == 7) {
         continue;
       }
