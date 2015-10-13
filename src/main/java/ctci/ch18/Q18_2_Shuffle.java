@@ -16,6 +16,40 @@ public class Q18_2_Shuffle {
   }
 
   /**
+   * Iterative random swap shuffle.
+   *
+   * O(n)
+   */
+  private static int[] knuthShuffle(final int[] cards) {
+    final ThreadLocalRandom r = ThreadLocalRandom.current();
+    for (int i = cards.length - 1; i > 0; i--) {
+      final int j = r.nextInt(0, i + 1);
+      swap(cards, i, j);
+    }
+    return cards;
+  }
+
+  /**
+   * Iterative random swap shuffle.
+   *
+   * O(n)
+   */
+  private static int[] knuthShuffleForward(final int[] cards) {
+    final ThreadLocalRandom r = ThreadLocalRandom.current();
+    for (int i = 0; i < cards.length - 1; i++) {
+      final int j = r.nextInt(i, cards.length);
+      swap(cards, i, j);
+    }
+    return cards;
+  }
+
+  private static void swap(final int[] cards, final int i, final int j) {
+    final int t = cards[i];
+    cards[i] = cards[j];
+    cards[j] = t;
+  }
+
+  /**
    * Shuffle by recursively swapping a random card
    *
    * O(n)
@@ -61,6 +95,8 @@ public class Q18_2_Shuffle {
   public static void main(String[] args) {
     System.out.println(Arrays.toString(associationShuffle(deck())));
     System.out.println(Arrays.toString(recursiveSwapShuffle(deck())));
+    System.out.println(Arrays.toString(knuthShuffle(deck())));
+    System.out.println(Arrays.toString(knuthShuffleForward(deck())));
   }
 
   private static int[] deck() {
