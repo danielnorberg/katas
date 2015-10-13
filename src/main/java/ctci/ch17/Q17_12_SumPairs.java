@@ -3,6 +3,7 @@ package ctci.ch17;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -24,6 +26,29 @@ public class Q17_12_SumPairs {
                is(ImmutableSet.of(pair(1, 9), pair(2, 8), pair(3, 7), pair(4, 6), pair(5, 5))));
     assertThat(sumPairsOneOffHash(10, asList(1, 2, 3, 4, 5, 5, 6, 7, 8, 9)),
                contains(pair(5, 5), pair(4, 6), pair(3, 7), pair(2, 8), pair(1, 9)));
+    assertThat(sumPairsBinarySearch(10, asList(1, 2, 3, 4, 5, 5, 6, 7, 8, 9)),
+               containsInAnyOrder(pair(5, 5), pair(4, 6), pair(3, 7), pair(2, 8), pair(1, 9)));
+  }
+
+  /**
+   * O(n log n)
+   */
+  private static List<Pair> sumPairsBinarySearch(final int x, final List<Integer> values) {
+    final List<Pair> pairs = new ArrayList<>();
+    Collections.sort(values);
+    for (int i = 0; i < values.size() - 1; i++) {
+      final int value = values.get(i);
+      if (value > x) {
+        break;
+      }
+      final int complement = x - value;
+      final List<Integer> tail = values.subList(i + 1, values.size());
+      final int ix = Collections.binarySearch(tail, complement);
+      if (ix >= 0 && ix < tail.size()) {
+        pairs.add(pair(value, complement));
+      }
+    }
+    return pairs;
   }
 
   private static Pair pair(final int a, final int b) {
