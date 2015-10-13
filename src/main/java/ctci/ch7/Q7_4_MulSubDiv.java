@@ -73,10 +73,8 @@ public class Q7_4_MulSubDiv {
   }
 
   private static int div(final int x, final int y) {
-    int res = 0;
-    int z = x;
-    if (x < 0 && y < 0) {
-      return div(-x, -y);
+    if (y == 0) {
+      throw new IllegalArgumentException();
     }
     if (x < 0) {
       return -div(-x, y);
@@ -84,12 +82,17 @@ public class Q7_4_MulSubDiv {
     if (y < 0) {
       return -div(x, -y);
     }
-    while (true) {
-      z = sub(z, y);
-      if (z < 0) {
-        break;
+    int res = 0;
+    int s = 0;
+    for (int i = 30; i >= 0 && s != x; i--) {
+      final int v = y << i;
+      if (v <= 0) {
+        continue;
       }
-      res++;
+      if (s + v <= x) {
+        s += v;
+        res |= 1 << i;
+      }
     }
     return res;
   }
@@ -99,14 +102,17 @@ public class Q7_4_MulSubDiv {
   }
 
   private static int mul(final int x, final int y) {
+    if (x < -1) {
+      return -mul(-x, y);
+    }
+    if (y < -1) {
+      return -mul(x, -y);
+    }
     int res = 0;
-    if (y > 0) {
-      for (int i = 0; i < y; i++) {
-        res += x;
-      }
-    } else {
-      for (int i = 0; i < -y; i++) {
-        res += -x;
+    for (int i = 0; i < 32; i++) {
+      final int b = 1 << i;
+      if ((y & b) != 0) {
+        res += x << i;
       }
     }
     return res;
