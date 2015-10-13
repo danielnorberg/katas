@@ -1,5 +1,7 @@
 package ctci.ch4;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,56 +70,57 @@ public class Q4_9_FindTreePathSum {
 
   private static class Path {
 
-    private int sum = 0;
+    private List<Integer> prefixes = new ArrayList<>();
     private List<Node> nodes = new ArrayList<>();
+    private int sum = 0;
+
+    public Path() {
+    }
 
     public Path(final Node node) {
       push(node);
     }
 
     private void push(Node node) {
-      sum += node.value;
+      prefixes.add(sum);
       nodes.add(node);
+      sum += node.value;
     }
 
     private void pop() {
-      final Node node = nodes.remove(nodes.size() - 1);
-      sum -= node.value;
+      nodes.remove(nodes.size() - 1);
+      sum = prefixes.remove(prefixes.size() - 1);
     }
   }
 
   private static Collection<List<Node>> findPaths(final int sum, final Node root) {
     final List<List<Node>> result = new ArrayList<>();
-    final List<Path> paths = new ArrayList<>();
-    findPaths(result, paths, 0, sum, root);
+    final Path path = new Path();
+    findPaths(result, path, 0, sum, root);
     return result;
   }
 
-  private static void findPaths(final List<List<Node>> result, final List<Path> paths,
+  private static void findPaths(final List<List<Node>> result, final Path path,
                                 final int level, final int needle, final Node node) {
-    for (int i = 0; i < paths.size(); i++) {
-      paths.get(i).push(node);
-    }
-    paths.add(new Path(node));
 
-    for (int i = 0; i < paths.size(); i++) {
-      final Path path = paths.get(i);
-      if (path.sum == needle) {
-        result.add(new ArrayList<>(path.nodes));
+    path.push(node);
+
+    for (int i = path.prefixes.size() - 1; i >= 0; i--) {
+      final int prefix = path.prefixes.get(i);
+      final int value = path.sum - prefix;
+      if (value == needle) {
+        result.add(ImmutableList.copyOf(path.nodes.subList(i, path.nodes.size())));
       }
     }
 
     if (node.left != null) {
-      findPaths(result, paths, level + 1, needle, node.left);
+      findPaths(result, path, level + 1, needle, node.left);
     }
     if (node.right != null) {
-      findPaths(result, paths, level + 1, needle, node.right);
+      findPaths(result, path, level + 1, needle, node.right);
     }
 
-    paths.remove(paths.size() - 1);
-    for (int i = 0; i < paths.size(); i++) {
-      paths.get(i).pop();
-    }
+    path.pop();
   }
 
 
