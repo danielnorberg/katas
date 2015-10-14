@@ -278,16 +278,16 @@ public class QuickSort {
   }
 
   private static void insertionSort(final int[] x, final int l, final int u) {
-    for (int i = l; i < u - 1; i++) {
-      final int xi = x[i + 1];
-      int j = i;
+    for (int i = l; i < u; i++) {
+      final int v = x[i];
+      int j = i - 1;
       for (; j >= l; j--) {
-        if (x[j] <= xi) {
+        if (x[j] <= v) {
           break;
         }
         x[j + 1] = x[j];
       }
-      x[j + 1] = xi;
+      x[j + 1] = v;
     }
   }
 

@@ -101,19 +101,20 @@ public class Q7_4_MulSubDiv {
     return x + mul(y, -1);
   }
 
-  private static int mul(final int x, final int y) {
-    if (x < -1) {
+  private static int mul(int x, int y) {
+    if (x < 0) {
       return -mul(-x, y);
     }
-    if (y < -1) {
+    if (y < 0) {
       return -mul(x, -y);
     }
     int res = 0;
-    for (int i = 0; i < 32; i++) {
-      final int b = 1 << i;
-      if ((y & b) != 0) {
-        res += x << i;
+    for (int i = 0; i < 31; i++) {
+      if ((y & 1) == 1) {
+        res += x;
       }
+      x <<= 1;
+      y >>= 1;
     }
     return res;
   }

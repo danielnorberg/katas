@@ -26,10 +26,14 @@ public class Q18_6_SmallestMillion {
     return IntStream.of(values).mapToObj(Integer::valueOf).collect(Collectors.toSet());
   }
 
+  /**
+   * Quickselect.
+   *
+   * O(n)
+   */
   public static int[] rank(final int[] numbers, int rank) {
     return rank(numbers, 0, numbers.length - 1, rank);
   }
-
 
   public static int[] rank(final int[] numbers, int left, int right, int rank) {
     final int pivotIx = ThreadLocalRandom.current().nextInt(left, right + 1);

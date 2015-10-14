@@ -66,10 +66,12 @@ public class Q18_8_NeedlesInHaystack {
   public static void main(final String... args) {
     assertThat(
         searchOptimizedForManyWords("ahaystackofwordsthatwe'lllookfor", asList("stack", "words", "notpresent")),
-        is(ImmutableMap.of("stack", 4, "words", 11)));
+        is(ImmutableMap.of("stack", 4,
+                           "words", 11)));
     assertThat(
         searchOptimizedForLargeHaystack("ahaystackofwordsstackwithhay", asList("stack", "words", "notpresent")),
-        is(ImmutableMap.of("stack", asList(4, 16), "words", asList(11))));
+        is(ImmutableMap.of("stack", asList(4, 16),
+                           "words", asList(11))));
   }
 
   private static Map<String, List<Integer>> searchOptimizedForLargeHaystack(final String haystack,
