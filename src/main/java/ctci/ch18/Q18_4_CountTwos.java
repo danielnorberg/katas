@@ -59,7 +59,19 @@ public class Q18_4_CountTwos {
   }
 
   /**
-   * Count twos per digit.
+   * Count twos per digit per the below recursive formula, implemented iteratively.
+   *
+   * count(x) = count(x, 0, 0)
+   *
+   * count(x, y, z) =
+   *   let a = x / 10
+   *       b = x - 10 * a
+   *       c = z + b * 10^y
+   *
+   *    x = 0: 0
+   *    b > 2: 10^y  + b * y * 10^(y - 1) + count(a, y + 1, c)
+   *    b = 2: 1 + z + b * y * 10^(y - 1) + count(a, y + 1, c)
+   *    b < 2:         b * y * 10^(y - 1) + count(a, y + 1, c)
    *
    * O(log n)
    */
