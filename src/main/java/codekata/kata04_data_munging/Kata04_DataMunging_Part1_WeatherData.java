@@ -10,13 +10,13 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Kata04_DataMunging_Part1 {
+public class Kata04_DataMunging_Part1_WeatherData {
 
   private static final Pattern TEMP_PATTERN = Pattern.compile("[^+-.\\d]");
   private static final Pattern DAY_PATTERN = Pattern.compile("[^\\d]");
 
   public static void main(final String... args) throws IOException {
-    try (final InputStream input = Kata04_DataMunging_Part1.class.getResourceAsStream("weather.dat")) {
+    try (final InputStream input = Kata04_DataMunging_Part1_WeatherData.class.getResourceAsStream("weather.dat")) {
       minTempSpreadDay(input);
     }
   }
